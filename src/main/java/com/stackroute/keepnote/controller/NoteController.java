@@ -48,7 +48,7 @@ public class NoteController {
 	 * for use when building model data for use with views. it should map to the default URL i.e. "/" */
 	@GetMapping("/")
     public String getAllNotes(ModelMap modelMap) {
-        modelMap.addAttribute("noteRepository",noteRepository.getList());
+        modelMap.addAttribute("noteList",noteRepository.getList());
         return "index";
     }
 	
@@ -62,13 +62,17 @@ public class NoteController {
 	*/
 	@RequestMapping("/saveNote")
     public String addNote(ModelMap modelMap ,@RequestParam int noteId, @RequestParam String noteTitle,@RequestParam String noteContent,@RequestParam String noteStatus) {
-        note.setCreatedAt(LocalDateTime.now());
-        note.setNoteContent(noteContent);
-        note.setNoteId(noteId);
-        note.setNoteStatus(noteStatus);
-        note.setNoteTitle(noteTitle);
-        noteRepository.addNote(note);
-        modelMap.addAttribute("addNote",noteRepository.getList());
+		Note note1 = (Note) applicationContext.getBean("note");
+		if(noteId==0 || noteTitle.isEmpty() || noteContent.isEmpty() || noteStatus.isEmpty()) {
+			modelMap.addAttribute("errorMessage", "invalid_inputs");
+		}
+		note1.setCreatedAt(LocalDateTime.now());
+	    note1.setNoteContent(noteContent);
+	    note1.setNoteId(noteId);
+	    note1.setNoteStatus(noteStatus);
+	    note1.setNoteTitle(noteTitle);
+	    noteRepository.addNote(note1);
+	    modelMap.addAttribute("noteList",noteRepository.getList());
         return "index";
     }
     
@@ -79,7 +83,7 @@ public class NoteController {
     @RequestMapping("/deleteNote")
     public String deleteNote(ModelMap modelMap,@RequestParam int noteId) {
         noteRepository.deleteNote(noteId);
-        modelMap.addAttribute("addNote",noteRepository.getList());
+        modelMap.addAttribute("noteList",noteRepository.getList());
         return "redirect:" + "/";
     }
 	
