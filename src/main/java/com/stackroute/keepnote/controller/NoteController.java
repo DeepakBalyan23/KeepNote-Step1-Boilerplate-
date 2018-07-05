@@ -61,17 +61,20 @@ public class NoteController {
 	 * This handler method should map to the URL "/saveNote". 
 	*/
 	@RequestMapping("/saveNote")
-    public String addNote(ModelMap modelMap ,@RequestParam int noteId, @RequestParam String noteTitle,@RequestParam String noteContent,@RequestParam String noteStatus) {
+    public String addNote(ModelMap modelMap ,@RequestParam Integer noteId, @RequestParam String noteTitle,@RequestParam String noteContent,@RequestParam String noteStatus) {
 		Note note1 = (Note) applicationContext.getBean("note");
-		if(noteId==0 || noteTitle.isEmpty() || noteContent.isEmpty() || noteStatus.isEmpty()) {
-			modelMap.addAttribute("errorMessage", "invalid_inputs");
+		if(noteId==null || noteTitle.isEmpty() || noteContent.isEmpty() || noteStatus.isEmpty()) {
+			modelMap.addAttribute("errorMessage", "No fields can be left empty.");
+		} else if(noteRepository.getList().stream().filter(o -> o.getNoteId()==noteId).findFirst().isPresent()){
+			modelMap.addAttribute("errorMessage", "Note Id already exists");
+		} else {
+			note1.setCreatedAt(LocalDateTime.now());
+		    note1.setNoteContent(noteContent);
+		    note1.setNoteId(noteId);
+		    note1.setNoteStatus(noteStatus);
+		    note1.setNoteTitle(noteTitle);
+		    noteRepository.addNote(note1);
 		}
-		note1.setCreatedAt(LocalDateTime.now());
-	    note1.setNoteContent(noteContent);
-	    note1.setNoteId(noteId);
-	    note1.setNoteStatus(noteStatus);
-	    note1.setNoteTitle(noteTitle);
-	    noteRepository.addNote(note1);
 	    modelMap.addAttribute("noteList",noteRepository.getList());
         return "index";
     }

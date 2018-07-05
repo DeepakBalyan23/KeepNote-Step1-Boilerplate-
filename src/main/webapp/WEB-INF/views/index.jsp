@@ -25,13 +25,16 @@
 			<input type="text" id="noteContent" name="noteContent" placeholder="note content" class="form-control"/>
 			<br/>
 			<label>Note Status:</label>
-			<input type="text" id="noteStatus" name="noteStatus" placeholder="note status" class="form-control"/>
+			<select name="noteStatus">
+	            <option value="active">active</option>
+	            <option value="inactive">inactive</option>
+	        </select>
 			<br/>
 			<button type="submit" class="form-control">Submit</button>
 		</form>
 	</div>
 	<c:if test="${!errorMessage.isEmpty()}">
-		<p>${errorMessage}</p>
+		<p style= "color:red;">${errorMessage}</p>
 	</c:if>
 	<!-- display all existing notes in a tabular structure with Id, Title,Content,Status, Created Date and Action -->
 	<table>

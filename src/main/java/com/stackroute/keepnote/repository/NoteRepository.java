@@ -39,7 +39,7 @@ public class NoteRepository {
 	 */
 
 	public void addNote(Note note) {
-		list.add(note);
+		list.add(0, note);;
 	}
 
 	/* This method should deleted a specified note from the list */
